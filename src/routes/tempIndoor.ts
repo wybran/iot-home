@@ -2,14 +2,14 @@ import { Router } from 'itty-router';
 import { database } from '../database';
 import { TempIndoor } from '../types';
 
-const tempIndoorRouter = Router();
+const tempIndoorRouter = Router({ base: '/api/tempIndoor'});
 
-tempIndoorRouter.get('/api/tempIndoor', async (request, env) => {
+tempIndoorRouter.get('/', async (request, env) => {
 	const { tempIndoor } = await database(env);
 	return Response.json(tempIndoor);
 });
 
-tempIndoorRouter.post('/api/tempIndoor', async (request, env) => {
+tempIndoorRouter.post('/', async (request, env) => {
 	const content = (await request.json()) as TempIndoor;
 	console.log(content);
 	const { addTempIndoor } = await database(env);
