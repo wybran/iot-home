@@ -1,0 +1,25 @@
+{
+  "name": "iot-home-wybran-front",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^4.29.13",
+    "@types/node": "20.3.1",
+    "@types/react": "18.2.12",
+    "@types/react-dom": "18.2.5",
+    "chart.js": "^4.3.0",
+    "eslint": "8.42.0",
+    "eslint-config-next": "13.4.5",
+    "next": "13.4.5",
+    "react": "18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "5.1.3"
+  }
+}
