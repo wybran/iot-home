@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS TempIndoor (Id INTEGER PRIMARY KEY, Temperature REAL, Humidity REAL, TimeStamp REAL);
+CREATE TABLE IF NOT EXISTS TempOutdoor (Id INTEGER PRIMARY KEY, Temperature REAL, TimeStamp REAL);
