@@ -24,7 +24,12 @@ ChartJS.register(
 );
 
 export default function Home() {
-    const { indoorTempData, outdoorTempData } = useSensors();
+    const {
+        indoorTempData,
+        outdoorTempData,
+        indoorTempAvgData,
+        outdoorTempAvgData
+    } = useSensors();
 
     return (
         <>
@@ -42,7 +47,7 @@ export default function Home() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main>
-                <div style={{textAlign: "center"}}>
+                <div style={{ textAlign: "center" }}>
                     <h1>Ostatni pomiar:</h1>
                     {indoorTempData && (
                         <h3>
@@ -60,12 +65,18 @@ export default function Home() {
                 </div>
 
                 <div className="container">
-                  <div className="chart">
-                    <LineChart type={ChartType.INDOOR}  />
-                  </div>
-                  <div className="chart">
-                    <LineChart type={ChartType.OUTDOOR} />
-                  </div>
+                    {indoorTempAvgData && (
+                        <LineChart
+                            type={ChartType.INDOOR}
+                            data={indoorTempAvgData}
+                        />
+                    )}
+                    {outdoorTempAvgData && (
+                        <LineChart
+                            type={ChartType.OUTDOOR}
+                            data={outdoorTempAvgData}
+                        />
+                    )}
                 </div>
             </main>
         </>
