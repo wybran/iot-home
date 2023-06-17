@@ -8,6 +8,7 @@ export enum ChartType {
 }
 
 export const LineChart = ({ type }: { type: ChartType }) => {
+    const { indoorTempAvgData, outdoorTempAvgData } = useSensors();
     const options = {
         responsive: true,
         plugins: {
@@ -25,7 +26,6 @@ export const LineChart = ({ type }: { type: ChartType }) => {
     };
 
     if (type === ChartType.INDOOR) {
-        const { indoorTempAvgData } = useSensors();
         const labels =
             indoorTempAvgData &&
             indoorTempAvgData.map((item) => timestampToHour(item.timestamp));
@@ -56,7 +56,6 @@ export const LineChart = ({ type }: { type: ChartType }) => {
             <>{indoorTempAvgData && <Line data={data} options={options} />}</>
         );
     } else {
-        const { outdoorTempAvgData } = useSensors();
         const labels =
             outdoorTempAvgData &&
             outdoorTempAvgData.map((item) => timestampToHour(item.timestamp));
