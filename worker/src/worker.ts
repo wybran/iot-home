@@ -11,6 +11,6 @@ export default {
 			return addCorsHeaders(response);
 		}
 
-		return Response.redirect('https://wybran.dev');
+		return Response.redirect('https://iot.wybran.dev');
 	}
 };
