@@ -12,3 +12,7 @@ export const addCorsHeaders = (response: Response): Response => {
 		headers: headers,
 	});
 };
+
+export const timestampToISO = (timestamp: number): string => {
+	return new Date(timestamp).toISOString();
+}

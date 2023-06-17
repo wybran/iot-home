@@ -4,19 +4,23 @@ import { TempIndoor } from '../types';
 
 const tempIndoorRouter = Router({ base: '/api/tempIndoor'});
 
-
 tempIndoorRouter.get('/', async (request, env) => {
-	const { tempIndoor } = await database(env);
+	const { lastTempIndoor } = await database(env);
+	const result = await lastTempIndoor();
+	return Response.json(result);
 
-	return Response.json(tempIndoor);
+});
 
+tempIndoorRouter.get('/avg', async (request, env) => {
+	const { last12HoursAvgTempIndoor } = await database(env);
+	const result = await last12HoursAvgTempIndoor();
+	return Response.json(result);
 });
 
 tempIndoorRouter.post('/', async (request, env) => {
 	const content = (await request.json()) as TempIndoor;
-	console.log(content);
 	const { addTempIndoor } = await database(env);
-	const info = await addTempIndoor({ ...content, timeStamp: Date.now() });
+	const info = await addTempIndoor({ ...content, timestamp: Date.now() });
 	return Response.json(info);
 });
 

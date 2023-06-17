@@ -6,9 +6,19 @@ export interface Env {
 export interface TempIndoor {
     temperature: number;
     humidity: number;
-    timeStamp?: number;
+    timestamp: number;
 }
+export interface TempIndoorResponse {
+    temperature: number;
+    humidity: number;
+    timestamp: string;
+}
+
 export interface TempOutdoor {
     temperature: number;
-    timeStamp?: number;
+    timestamp: number;
+}
+export interface TempOutdoorResponse {
+    temperature: number;
+    timestamp: string;
 }

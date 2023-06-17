@@ -9,8 +9,8 @@ router.post('*', async (request, env) => {
 	if (authHeader !== env.AUTH_TOKEN) return new Response('Unauthorized', { status: 401 });
 });
 
-router.all('/tempIndoor', tempIndoorRouter.handle);
-router.all('/tempOutdoor', tempOutdoorRouter.handle);
+router.all('/tempIndoor/*', tempIndoorRouter.handle);
+router.all('/tempOutdoor/*', tempOutdoorRouter.handle);
 
 router.all('*', () => new Response('Not Found.', { status: 404 }));
 
