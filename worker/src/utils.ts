@@ -3,6 +3,7 @@ export const addCorsHeaders = (response: Response): Response => {
 
 	headers.set('Access-Control-Allow-Origin', '*');
 	headers.set('access-control-expose-headers', '*');
+	headers.set('Access-Control-Allow-Methods', 'GET, HEAD, POST, OPTIONS');
 	headers.set('Cache-Control', 'max-age=10');
 	headers.set('Content-Type', 'application/json');
 
