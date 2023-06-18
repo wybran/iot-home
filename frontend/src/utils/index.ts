@@ -19,8 +19,7 @@ export const timestampToMoment = (timestamp: string): String => {
 
 export default async function runOneSignal() {
     await OneSignal.init({
-        appId: "066534bd-877a-40c7-9d64-25cecade4dee",
-        allowLocalhostAsSecureOrigin: true
+        appId: "066534bd-877a-40c7-9d64-25cecade4dee"
     });
     OneSignal.showSlidedownPrompt();
 }
