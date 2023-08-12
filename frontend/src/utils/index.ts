@@ -10,7 +10,7 @@ export const timestampToHour = (timestamp: string): String => {
         minute: "numeric",
         hour12: false
     });
-    return timeString.split(":")[0] + ":00";
+    return timeString;
 };
 
 export const timestampToMoment = (timestamp: string): String => {
