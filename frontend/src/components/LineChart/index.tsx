@@ -1,40 +1,60 @@
 import { Line } from "react-chartjs-2";
-import { TempIndoor, TempOutdoor } from "@/features/useSensors/types";
+import {
+    HumData,
+    TempData,
+    TempIndoor,
+    WaterFlow
+} from "@/features/useSensors/types";
 import { timestampToHour } from "@/utils";
 
 export enum ChartType {
-    INDOOR = "INDOOR",
-    OUTDOOR = "OUTDOOR"
+    TEMPERATURE,
+    HUMIDITY,
+    WATERFLOW
 }
-
 interface LineChartProps {
+    title: string;
+    data: TempData[] | HumData[] | WaterFlow[];
     type: ChartType;
-    data: TempIndoor[] | TempOutdoor[];
 }
 
-export const LineChart = ({ type, data }: LineChartProps) => {
+export const LineChart = ({ title, data, type }: LineChartProps) => {
     const labels = data.map((item) => timestampToHour(item.timestamp));
 
-    const chartData = {
-        labels,
-        datasets: [
-            {
-                label: "Temperatura",
-                data: data.map((item) => item.temperature),
-                borderColor: "rgb(255, 99, 132)",
-                backgroundColor: "rgba(255, 99, 132, 0.5)"
-            }
-        ]
-    };
-
-    if (type === ChartType.INDOOR) {
-        chartData.datasets.push({
+    const tempDataSets = [
+        {
+            label: "Temperatura",
+            data: data.map((item) => (item as TempData).temperature),
+            borderColor: "rgb(255, 99, 132)",
+            backgroundColor: "rgba(255, 99, 132, 0.5)"
+        }
+    ];
+    const humidityDataSets = [
+        {
             label: "Wilgotność",
             data: data.map((item) => (item as TempIndoor).humidity),
             borderColor: "rgb(54, 162, 235)",
             backgroundColor: "rgba(54, 162, 235, 0.5)"
-        });
-    }
+        }
+    ];
+    const waterflowDataSets = [
+        {
+            label: "Przepływ",
+            data: data.map((item) => (item as WaterFlow).count),
+            borderColor: "rgb(75, 192, 192)",
+            backgroundColor: "rgba(75, 192, 192, 0.5)"
+        }
+    ];
+
+    const chartData = {
+        labels,
+        datasets:
+            type === ChartType.TEMPERATURE
+                ? tempDataSets
+                : type === ChartType.HUMIDITY
+                ? humidityDataSets
+                : waterflowDataSets
+    };
 
     const options = {
         responsive: true,
@@ -44,10 +64,7 @@ export const LineChart = ({ type, data }: LineChartProps) => {
             },
             title: {
                 display: true,
-                text:
-                    type === ChartType.INDOOR
-                        ? "Temperatura i wilgotność wewnątrz"
-                        : "Temperatura na zewnątrz"
+                text: title
             }
         }
     };
@@ -56,5 +73,5 @@ export const LineChart = ({ type, data }: LineChartProps) => {
         <div className="chart">
             <Line data={chartData} options={options} />
         </div>
-    )
+    );
 };

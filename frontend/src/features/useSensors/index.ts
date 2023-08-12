@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { TempIndoor, TempOutdoor} from "./types";
+import { TempIndoor, TempOutdoor, WaterFlow} from "./types";
 import { API_URL } from "../../../config";
 
 export const useSensors = () => {
@@ -9,7 +9,9 @@ export const useSensors = () => {
         isLoading: indoorTempIsLoading
     } = useQuery<TempIndoor>(
         ["indoorTemp"],
-        async () => await (await fetch(`${API_URL}/tempIndoor`)).json()
+        async () => await (await fetch(`${API_URL}/tempIndoor`)).json(), {
+            refetchInterval: 10000
+        }
     );
     const {
         data: outdoorTempData,
@@ -17,7 +19,19 @@ export const useSensors = () => {
         isLoading: outdoorTempIsLoading
     } = useQuery<TempOutdoor>(
         ["outdoorTemp"],
-        async () => await (await fetch(`${API_URL}/tempOutdoor`)).json()
+        async () => await (await fetch(`${API_URL}/tempOutdoor`)).json(), {
+            refetchInterval: 10000
+        }
+    );
+    const {
+        data: lastHourWaterFlowData,
+        isError: lastHourWaterFlowDataIsError,
+        isLoading: lastHourWaterFlowDataIsLoading
+    } = useQuery<WaterFlow[]>(
+        ["lastHourWaterFlow"],
+        async () => await (await fetch(`${API_URL}/waterFlow`)).json(), {
+            refetchInterval: 10000
+        }
     );
     const {
         data: indoorTempAvgData,
@@ -35,6 +49,14 @@ export const useSensors = () => {
         ["outdoorTempAvg"],
         async () => await (await fetch(`${API_URL}/tempOutdoor/avg`)).json()
     );
+    const {
+        data: waterFlowAvgData,
+        isError: waterFlowAvgIsError,
+        isLoading: waterFlowAvgIsLoading
+    } = useQuery<WaterFlow[]>(
+        ["waterFlowAvg"],
+        async () => await (await fetch(`${API_URL}/waterFlow/avg`)).json()
+    );
 
     return {
         indoorTempData,
@@ -43,11 +65,17 @@ export const useSensors = () => {
         outdoorTempData,
         outdoorTempIsError,
         outdoorTempIsLoading,
+        lastHourWaterFlowData: lastHourWaterFlowData ?? [],
+        lastHourWaterFlowDataIsError,
+        lastHourWaterFlowDataIsLoading,
         indoorTempAvgData: indoorTempAvgData ?? [],
         indoorTempAvgIsError,
         indoorTempAvgIsLoading,
         outdoorTempAvgData: outdoorTempAvgData ?? [],
         outdoorTempAvgIsError,
-        outdoorTempAvgIsLoading
+        outdoorTempAvgIsLoading,
+        waterFlowAvgData: waterFlowAvgData ?? [],
+        waterFlowAvgIsError,
+        waterFlowAvgIsLoading
     };
 };

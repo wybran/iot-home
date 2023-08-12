@@ -27,7 +27,9 @@ export default function Home() {
         indoorTempData,
         outdoorTempData,
         indoorTempAvgData,
-        outdoorTempAvgData
+        outdoorTempAvgData,
+        lastHourWaterFlowData,
+        waterFlowAvgData
     } = useSensors();
 
     return (
@@ -37,12 +39,12 @@ export default function Home() {
                     <h1>Ostatni pomiar:</h1>
                     {indoorTempData && (
                         <h3>
-                            W środku: {indoorTempData.temperature}°C,{" "}
+                            🏠 W środku: {indoorTempData.temperature}°C,{" "}
                             {indoorTempData.humidity}% wilgotności
                         </h3>
                     )}
                     {outdoorTempData && (
-                        <h3>Na zewnątrz: {outdoorTempData.temperature}°C</h3>
+                        <h3>🌳 Na zewnątrz: {outdoorTempData.temperature}°C</h3>
                     )}
                     <h5>
                         {outdoorTempData &&
@@ -51,16 +53,39 @@ export default function Home() {
                 </div>
 
                 <div className="container">
-                    {indoorTempAvgData && (
-                        <LineChart
-                            type={ChartType.INDOOR}
-                            data={indoorTempAvgData}
-                        />
-                    )}
                     {outdoorTempAvgData && (
                         <LineChart
-                            type={ChartType.OUTDOOR}
+                            title="🌳 Temperatura na zewnątrz"
+                            type={ChartType.TEMPERATURE}
                             data={outdoorTempAvgData}
+                        />
+                    )}
+                    {indoorTempAvgData && (
+                        <>
+                            <LineChart
+                                title="🏠 Temperatura wewnątrz"
+                                type={ChartType.TEMPERATURE}
+                                data={indoorTempAvgData}
+                            />
+                            <LineChart
+                                title="🏠 Wilgotność wewnątrz"
+                                type={ChartType.HUMIDITY}
+                                data={indoorTempAvgData}
+                            />
+                        </>
+                    )}
+                    {lastHourWaterFlowData && waterFlowAvgData && (
+                        <LineChart
+                            title="🚰 Przepływ wody w ostatniej godzinie"
+                            type={ChartType.WATERFLOW}
+                            data={lastHourWaterFlowData}
+                        />
+                    )}
+                    {waterFlowAvgData && (
+                        <LineChart
+                            title="🚰 Średni przepływ wody w ostatnich 24 godzinach"
+                            type={ChartType.WATERFLOW}
+                            data={waterFlowAvgData}
                         />
                     )}
                 </div>
