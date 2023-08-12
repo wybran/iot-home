@@ -1,6 +1,7 @@
 import { Router } from 'itty-router';
 import tempIndoorRouter from './routes/tempIndoor';
 import tempOutdoorRouter from './routes/tempOutdoor';
+import waterFlowRouter from './routes/waterFlow';
 
 const router = Router({ base: '/api' });
 
@@ -11,6 +12,7 @@ router.post('*', async (request, env) => {
 
 router.all('/tempIndoor/*', tempIndoorRouter.handle);
 router.all('/tempOutdoor/*', tempOutdoorRouter.handle);
+router.all('/waterFlow/*', waterFlowRouter.handle);
 
 router.all('*', () => new Response('Not Found.', { status: 404 }));
 

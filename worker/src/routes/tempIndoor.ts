@@ -8,7 +8,6 @@ tempIndoorRouter.get('/', async (request, env) => {
 	const { lastTempIndoor } = await database(env);
 	const result = await lastTempIndoor();
 	return Response.json(result);
-
 });
 
 tempIndoorRouter.get('/avg', async (request, env) => {

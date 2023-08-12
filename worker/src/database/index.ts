@@ -1,25 +1,24 @@
-import { Env, TempIndoor, TempIndoorResponse, TempOutdoor, TempOutdoorResponse } from '../types';
+import { Env, TempIndoor, TempIndoorResponse, TempOutdoor, TempOutdoorResponse, WaterFlow } from '../types';
 import { timestampToISO } from '../utils';
 
 export const database = async (env: Env) => {
-	
-	const lastTempIndoor = async () => { 
-		const result = await env.DB.prepare('SELECT * FROM TempIndoor ORDER BY Id DESC LIMIT 1').first() as TempIndoor;
+	const lastTempIndoor = async () => {
+		const result = (await env.DB.prepare('SELECT * FROM TempIndoor ORDER BY Id DESC LIMIT 1').first()) as TempIndoor;
 		const response: TempIndoorResponse = {
 			temperature: result.temperature,
 			humidity: result.humidity,
-			timestamp: timestampToISO(result.timestamp)
+			timestamp: timestampToISO(result.timestamp),
 		};
 		return response;
-	}
-	const lastTempOutdoor = async () => { 
-		const result = await env.DB.prepare('SELECT * FROM TempOutdoor ORDER BY Id DESC LIMIT 1').first() as TempOutdoor;
+	};
+	const lastTempOutdoor = async () => {
+		const result = (await env.DB.prepare('SELECT * FROM TempOutdoor ORDER BY Id DESC LIMIT 1').first()) as TempOutdoor;
 		const response: TempOutdoorResponse = {
 			temperature: result.temperature,
-			timestamp: timestampToISO(result.timestamp)
+			timestamp: timestampToISO(result.timestamp),
 		};
 		return response;
-	}
+	};
 
 	const addTempIndoor = async (tempIndoor: TempIndoor) => {
 		return await env.DB.prepare('INSERT INTO TempIndoor (temperature, humidity, timestamp) VALUES (?, ?, ?)')
@@ -30,6 +29,9 @@ export const database = async (env: Env) => {
 		return await env.DB.prepare('INSERT INTO TempOutdoor (temperature, timestamp) VALUES (?, ?)')
 			.bind(tempOutdoor.temperature, tempOutdoor.timestamp)
 			.run();
+	};
+	const addWaterFlow = async (waterFlow: WaterFlow) => {
+		return await env.DB.prepare('INSERT INTO Waterflow (count, timestamp) VALUES (?, ?)').bind(waterFlow.count, waterFlow.timestamp).run();
 	};
 
 	const last12HoursAvgTempIndoor = async () => {
@@ -42,7 +44,7 @@ export const database = async (env: Env) => {
 			return {
 				temperature: parseFloat(entry.temperature.toFixed(2)),
 				humidity: parseFloat(entry.humidity.toFixed(2)),
-				timestamp: timestampToISO(entry.timestamp)
+				timestamp: timestampToISO(entry.timestamp),
 			};
 		});
 	};
@@ -55,6 +57,34 @@ export const database = async (env: Env) => {
 		return results.map((entry) => {
 			return {
 				temperature: parseFloat(entry.temperature.toFixed(2)),
+				timestamp: timestampToISO(entry.timestamp),
+			};
+		});
+	};
+
+	const lastHourWaterFlowCounts = async () => {
+		const oneHourAgo = Date.now() - 60 * 60 * 1000;
+		const query =
+			"SELECT count, datetime(timestamp/1000, 'unixepoch') as timestamp FROM Waterflow WHERE timestamp >= ? ORDER BY timestamp ASC";
+		const { results } = (await env.DB.prepare(query).bind(oneHourAgo).all()) as { results: WaterFlow[] };
+
+		return results.map((entry) => {
+			return {
+				count: entry.count,
+				timestamp: timestampToISO(entry.timestamp)
+			};
+		});
+	};
+
+	const last12HoursAvgWaterFlowCounts = async () => {
+		const twelveHoursAgo = Date.now() - 12 * 60 * 60 * 1000;
+		const query =
+			"SELECT AVG(count) as count, datetime(timestamp/1000, 'unixepoch') as timestamp FROM Waterflow WHERE timestamp >= ? GROUP BY strftime('%Y-%m-%d %H', datetime(timestamp/1000, 'unixepoch', 'localtime')) ORDER BY timestamp ASC";
+		const { results } = (await env.DB.prepare(query).bind(twelveHoursAgo).all()) as { results: WaterFlow[] };
+
+		return results.map((entry) => {
+			return {
+				count: parseFloat(entry.count.toFixed(2)),
 				timestamp: timestampToISO(entry.timestamp)
 			};
 		});
@@ -65,7 +95,10 @@ export const database = async (env: Env) => {
 		lastTempOutdoor,
 		addTempIndoor,
 		addTempOutdoor,
+		addWaterFlow,
 		last12HoursAvgTempIndoor,
-		last12HoursAvgTempOutdoor
+		last12HoursAvgTempOutdoor,
+		lastHourWaterFlowCounts,
+		last12HoursAvgWaterFlowCounts,
 	};
 };
