@@ -1,6 +1,8 @@
 export interface Env {
     DB: D1Database;
     AUTH_TOKEN: string;
+    OneSignalAPIKey: string;
+    OneSignalAppId: string;
 }
 
 export interface TempIndoor {
